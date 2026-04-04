@@ -2,7 +2,11 @@ import sqlite3
 import json
 from datetime import datetime
 
-DB_PATH = "house_agent.db"
+import pathlib
+
+# Use /data on Fly.io (persistent volume), local file otherwise
+DATA_DIR = pathlib.Path("/data") if pathlib.Path("/data").exists() else pathlib.Path(".")
+DB_PATH = str(DATA_DIR / "house_agent.db")
 
 
 def get_db():

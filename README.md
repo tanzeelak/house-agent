@@ -46,11 +46,72 @@ Method: POST
 
 We're currently using the Twilio WhatsApp Sandbox. Each roommate must opt in before they can message the agent:
 
-1. Save `+1 (415) 523-8886` as a contact
+1. Save the sandbox number (see `.env` → `TWILIO_WHATSAPP_NUMBER`) as a contact
 2. Send `join her-so` to that contact on WhatsApp
 3. Wait for the confirmation message
 
 This must be repeated every 72 hours (sandbox limitation). Once we have an approved WhatsApp Business number, this step goes away.
+
+## Deploying to Fly.io
+
+### First-time setup
+
+1. Install the Fly CLI and log in:
+
+```bash
+brew install flyctl
+fly auth login
+```
+
+2. Launch the app (uses existing `fly.toml`):
+
+```bash
+fly launch --no-deploy
+```
+
+3. Create a persistent volume for SQLite:
+
+```bash
+fly volumes create house_agent_data --region sjc --size 1
+```
+
+4. Set your secrets:
+
+```bash
+fly secrets set \
+  TYPESAFE_API_KEY="your-key" \
+  OPENAI_API_KEY="your-key" \
+  ANTHROPIC_API_KEY="your-key" \
+  TWILIO_ACCOUNT_SID="your-sid" \
+  TWILIO_AUTH_TOKEN="your-token" \
+  TWILIO_WHATSAPP_NUMBER="whatsapp:+1XXXXXXXXXX"
+```
+
+5. Deploy:
+
+```bash
+fly deploy
+```
+
+### Redeploying after changes
+
+```bash
+fly deploy
+```
+
+### Useful commands
+
+```bash
+fly logs              # view live logs
+fly ssh console       # SSH into the running machine
+fly status            # check app status
+```
+
+Once deployed, update the Twilio webhook to:
+
+```
+https://house-agent-morning-water-9712.fly.dev/webhook
+```
 
 ## Task List
 
@@ -67,9 +128,12 @@ This must be repeated every 72 hours (sandbox limitation). Once we have an appro
 - [ ] Test with multiple people messaging the agent
 
 ### Backlog
-- [ ] Deploy to long-running server (so agent stays up without local machine)
-- [ ] Deploy to Fly.io with persistent volume for SQLite
-- [ ] Approved WhatsApp Business number (remove join step)
+- [x] Deploy to Fly.io with persistent volume for SQLite
+- [ ] Approved WhatsApp Business number for prod (points to fly.dev URL, removes join step)
+
+### Environment setup
+- **Dev**: Twilio sandbox → ngrok → local machine
+- **Prod**: Approved WhatsApp Business number → house-agent-morning-water-9712.fly.dev/webhook → Fly.io
 
 ### V1 — Automation
 - [ ] OpenClaw browser automation for maintenance portal

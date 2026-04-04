@@ -11,9 +11,9 @@ PROMPTS = [
         "instructions": "What action is this roommate requesting?",
         "options": [
             {"option": "maintenance_request", "description": "Requests that can be made through the maintenance portal"},
-            {"option": "potential_roommates", "description": "Add potential roommates for the house"},
-            {"option": "potential_subletters", "description": "Add potential subletters for the house"},
-            {"option": "actual_subletter", "description": "Update the sheet with a subletter for a specific room + date range"},
+            {"option": "potential_roommate", "description": "Add potential roommates for the house"},
+            {"option": "potential_subletter", "description": "Someone is inquiring about subletting or expressing interest — not yet confirmed"},
+            {"option": "actual_subletter", "description": "A subletter has been confirmed and needs to be recorded with their room and date range"},
             {"option": "uncategorized", "description": "Does not fit any of the above categories"},
         ],
     },

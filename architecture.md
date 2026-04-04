@@ -233,8 +233,8 @@ Typesafe gives fast, structured, confidence-scored decisions that code can branc
 
 ## Deployment
 
-- FastAPI server behind ngrok (dev) or deployed to Railway/Fly.io (prod)
+- FastAPI server behind ngrok (dev) or deployed to Fly.io (prod)
 - Twilio webhook URL points to the server
-- SQLite file lives on the server (swap to Postgres for multi-instance)
+- SQLite file persisted on a Fly.io volume (`fly volumes create`)
 - OpenClaw runs locally for browser automation (v1)
 - Environment variables: `TYPESAFE_API_KEY`, `ANTHROPIC_API_KEY`, `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_WHATSAPP_NUMBER`, `PORTAL_URL`, `PORTAL_USER`, `PORTAL_PASS`

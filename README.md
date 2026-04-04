@@ -47,11 +47,15 @@ Method: POST
 ### V0 — Core Agent
 - [x] FastAPI webhook server (receives WhatsApp messages via Twilio)
 - [x] Twilio WhatsApp Sandbox connected
-- [ ] Typesafe intent classification (maintenance, roommates, subletters, etc.)
-- [ ] Typesafe urgency detection (is_urgent noul)
+- [x] Typesafe intent classification (maintenance, roommates, subletters, etc.)
+- [x] Typesafe urgency detection (is_urgent noul)
+- [x] SQLite database (roommates, messages, requests)
 - [ ] Claude response generation
 - [ ] Action router (branch on Typesafe results + confidence)
-- [ ] SQLite database (roommates, messages, requests)
+- [ ] Test with multiple people messaging the agent
+
+### Backlog
+- [ ] Deploy to Fly.io with persistent volume for SQLite
 
 ### V1 — Automation
 - [ ] OpenClaw browser automation for maintenance portal

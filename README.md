@@ -61,11 +61,13 @@ This must be repeated every 72 hours (sandbox limitation). Once we have an appro
 - [x] Typesafe urgency detection (is_urgent noul)
 - [x] SQLite database (roommates, messages, requests)
 - [ ] LLM fallback for classification when Typesafe is down
-- [ ] Claude response generation
+- [x] OpenAI response generation
+- [ ] Switch response generation to Gemini (free tier)
 - [ ] Action router (branch on Typesafe results + confidence)
 - [ ] Test with multiple people messaging the agent
 
 ### Backlog
+- [ ] Deploy to long-running server (so agent stays up without local machine)
 - [ ] Deploy to Fly.io with persistent volume for SQLite
 - [ ] Approved WhatsApp Business number (remove join step)
 

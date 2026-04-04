@@ -5,6 +5,7 @@ from twilio.rest import Client
 from dotenv import load_dotenv
 from typesafe_client_raw import classify_message
 from db import upsert_roommate, save_message, save_request
+from response_gen import generate_reply, extract_details
 
 load_dotenv()
 
@@ -33,20 +34,21 @@ async def webhook(request: Request):
 
     print(f"  → intent={intent} (confidence={confidence:.2f}), urgent={is_urgent:.2f}")
 
+    # Extract details for subletter/roommate intents
+    extracted = None
+    if intent in ("potential_subletter", "potential_roommate", "actual_subletter") and confidence > 0.6:
+        extracted = extract_details(body)
+        print(f"  → extracted: {extracted}")
+
     # Store in SQLite
     upsert_roommate(sender)
     save_message(sender, body, "inbound")
     if intent != "uncategorized" and confidence > 0.6:
-        save_request(sender, intent, confidence, is_urgent, body)
+        save_request(sender, intent, confidence, is_urgent, body, extracted)
 
-    # TODO: action router
-    # TODO: Claude response generation
-
-    # For now, reply with the classification results
-    reply_text = (
-        f"Intent: {intent} (confidence: {confidence:.2f})\n"
-        f"Urgent: {'yes' if is_urgent > 0.7 else 'no'} ({is_urgent:.2f})"
-    )
+    # Response generation
+    reply_text = generate_reply(body, classification, sender)
+    save_message(sender, reply_text, "outbound")
 
     resp = MessagingResponse()
     resp.message(reply_text)

@@ -4,6 +4,7 @@ from twilio.twiml.messaging_response import MessagingResponse
 from twilio.rest import Client
 from dotenv import load_dotenv
 from typesafe_client_raw import classify_message
+from db import upsert_roommate, save_message, save_request
 
 load_dotenv()
 
@@ -32,9 +33,14 @@ async def webhook(request: Request):
 
     print(f"  → intent={intent} (confidence={confidence:.2f}), urgent={is_urgent:.2f}")
 
+    # Store in SQLite
+    upsert_roommate(sender)
+    save_message(sender, body, "inbound")
+    if intent != "uncategorized" and confidence > 0.6:
+        save_request(sender, intent, confidence, is_urgent, body)
+
     # TODO: action router
     # TODO: Claude response generation
-    # TODO: log to SQLite
 
     # For now, reply with the classification results
     reply_text = (

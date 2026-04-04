@@ -3,6 +3,7 @@ from fastapi import FastAPI, Request, Response
 from twilio.twiml.messaging_response import MessagingResponse
 from twilio.rest import Client
 from dotenv import load_dotenv
+from typesafe_client_raw import classify_message
 
 load_dotenv()
 
@@ -23,13 +24,23 @@ async def webhook(request: Request):
 
     print(f"[{sender}] {body}")
 
-    # TODO: Typesafe classification
+    # Typesafe classification
+    classification = await classify_message(body)
+    intent = classification["intent"]
+    confidence = classification["intent_confidence"]
+    is_urgent = classification["is_urgent"]
+
+    print(f"  → intent={intent} (confidence={confidence:.2f}), urgent={is_urgent:.2f}")
+
     # TODO: action router
     # TODO: Claude response generation
     # TODO: log to SQLite
 
-    # For now, echo back to confirm the webhook works
-    reply_text = f"Got your message: {body}"
+    # For now, reply with the classification results
+    reply_text = (
+        f"Intent: {intent} (confidence: {confidence:.2f})\n"
+        f"Urgent: {'yes' if is_urgent > 0.7 else 'no'} ({is_urgent:.2f})"
+    )
 
     resp = MessagingResponse()
     resp.message(reply_text)

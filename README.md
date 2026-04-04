@@ -41,3 +41,19 @@ https://<your-ngrok-url>.ngrok-free.app/webhook
 ```
 
 Method: POST
+
+## Task List
+
+### V0 — Core Agent
+- [x] FastAPI webhook server (receives WhatsApp messages via Twilio)
+- [x] Twilio WhatsApp Sandbox connected
+- [ ] Typesafe intent classification (maintenance, roommates, subletters, etc.)
+- [ ] Typesafe urgency detection (is_urgent noul)
+- [ ] Claude response generation
+- [ ] Action router (branch on Typesafe results + confidence)
+- [ ] SQLite database (roommates, messages, requests)
+
+### V1 — Automation
+- [ ] OpenClaw browser automation for maintenance portal
+- [ ] Confidence-gated safety for real-world actions
+- [ ] Google Sheets integration (subletter tracking)

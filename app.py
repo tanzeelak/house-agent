@@ -36,11 +36,13 @@ async def webhook(request: Request):
 
     print(f"  → intent={intent} (confidence={confidence:.2f}), urgent={is_urgent:.2f}, directed={is_directed:.2f}")
 
-    # Ignore general chatter not directed at the agent
+    # Simple reply for general chatter not directed at the agent
     if is_directed < 0.5:
-        print("  → ignoring (not directed at agent)")
+        print("  → not directed at agent, simple reply")
         save_message(sender, body, "inbound")
-        return Response(content="", status_code=200)
+        resp = MessagingResponse()
+        resp.message("Hey! I'm the house agent 🏠 I can help with maintenance requests, subletter tracking, and roommate stuff. Just let me know what you need!")
+        return Response(content=str(resp), media_type="application/xml")
 
     # Extract details for subletter/roommate intents
     extracted = None

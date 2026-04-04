@@ -1,5 +1,6 @@
 import os
 import httpx
+from llm_fallback import classify_message_llm
 
 TYPESAFE_API_URL = "https://api.typesafe.ai/preview/evaluation"
 TYPESAFE_API_KEY = os.getenv("TYPESAFE_API_KEY")
@@ -26,29 +27,36 @@ PROMPTS = [
 
 
 async def classify_message(message: str) -> dict:
-    """Send a message to Typesafe for intent classification and urgency detection."""
-    async with httpx.AsyncClient() as client:
-        response = await client.post(
-            TYPESAFE_API_URL,
-            headers={
-                "Authorization": f"Bearer {TYPESAFE_API_KEY}",
-                "Content-Type": "application/json",
-            },
-            json={
-                "document": message,
-                "model": "speed_latest",
-                "prompts": PROMPTS,
-            },
-        )
-        response.raise_for_status()
-        data = response.json()
+    """Send a message to Typesafe for intent classification and urgency detection.
+    Falls back to Claude if Typesafe is unavailable."""
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                TYPESAFE_API_URL,
+                headers={
+                    "Authorization": f"Bearer {TYPESAFE_API_KEY}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "document": message,
+                    "model": "speed_latest",
+                    "prompts": PROMPTS,
+                },
+                timeout=5.0,
+            )
+            response.raise_for_status()
+            data = response.json()
 
-    intent_result = data["responses"][0]
-    urgency_result = data["responses"][1]
+        intent_result = data["responses"][0]
+        urgency_result = data["responses"][1]
 
-    return {
-        "intent": intent_result["chosen"],
-        "intent_confidence": intent_result["confidence"],
-        "intent_probabilities": {p["option"]: p["probability"] for p in intent_result["probabilities"]},
-        "is_urgent": urgency_result["probability"],
-    }
+        print("  → classified via Typesafe")
+        return {
+            "intent": intent_result["chosen"],
+            "intent_confidence": intent_result["confidence"],
+            "intent_probabilities": {p["option"]: p["probability"] for p in intent_result["probabilities"]},
+            "is_urgent": urgency_result["probability"],
+        }
+    except Exception as e:
+        print(f"  → Typesafe unavailable ({e}), falling back to Claude")
+        return await classify_message_llm(message)

@@ -42,6 +42,16 @@ https://<your-ngrok-url>.ngrok-free.app/webhook
 
 Method: POST
 
+## Joining the Agent (Sandbox)
+
+We're currently using the Twilio WhatsApp Sandbox. Each roommate must opt in before they can message the agent:
+
+1. Save `+1 (415) 523-8886` as a contact
+2. Send `join her-so` to that contact on WhatsApp
+3. Wait for the confirmation message
+
+This must be repeated every 72 hours (sandbox limitation). Once we have an approved WhatsApp Business number, this step goes away.
+
 ## Task List
 
 ### V0 — Core Agent
@@ -50,12 +60,14 @@ Method: POST
 - [x] Typesafe intent classification (maintenance, roommates, subletters, etc.)
 - [x] Typesafe urgency detection (is_urgent noul)
 - [x] SQLite database (roommates, messages, requests)
+- [ ] LLM fallback for classification when Typesafe is down
 - [ ] Claude response generation
 - [ ] Action router (branch on Typesafe results + confidence)
 - [ ] Test with multiple people messaging the agent
 
 ### Backlog
 - [ ] Deploy to Fly.io with persistent volume for SQLite
+- [ ] Approved WhatsApp Business number (remove join step)
 
 ### V1 — Automation
 - [ ] OpenClaw browser automation for maintenance portal

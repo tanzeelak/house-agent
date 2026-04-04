@@ -32,7 +32,15 @@ async def webhook(request: Request):
     confidence = classification["intent_confidence"]
     is_urgent = classification["is_urgent"]
 
-    print(f"  → intent={intent} (confidence={confidence:.2f}), urgent={is_urgent:.2f}")
+    is_directed = classification.get("is_directed_at_agent", 1.0)
+
+    print(f"  → intent={intent} (confidence={confidence:.2f}), urgent={is_urgent:.2f}, directed={is_directed:.2f}")
+
+    # Ignore general chatter not directed at the agent
+    if is_directed < 0.5:
+        print("  → ignoring (not directed at agent)")
+        save_message(sender, body, "inbound")
+        return Response(content="", status_code=200)
 
     # Extract details for subletter/roommate intents
     extracted = None

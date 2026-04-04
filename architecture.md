@@ -91,9 +91,9 @@ Python logic that branches on Typesafe results:
 All intents with confidence > 0.8                           → log to requests table in SQLite
 intent = "maintenance_request" + is_urgent > 0.7            → log as urgent, (v1: submit emergency ticket)
 intent = "maintenance_request" + confidence > 0.8            → log request, (v1: submit normal ticket)
-intent = "potential_roommates" + confidence > 0.8             → log candidate info
-intent = "potential_subletters" + confidence > 0.8            → log candidate info
-intent = "actual_subletter" + confidence > 0.8                → log subletter details (room + dates)
+intent = "potential_roommates" + confidence > 0.8             → log candidate info + append to Google Sheet
+intent = "potential_subletters" + confidence > 0.8            → log candidate info + append to Google Sheet
+intent = "actual_subletter" + confidence > 0.8                → log subletter details (room + dates) + append to Google Sheet
 intent = "uncategorized" or confidence < 0.6                  → ask roommate to clarify
 ```
 
@@ -119,7 +119,27 @@ Claude is used for generation only. Typesafe handles all judgment/classification
 
 This is the core of V0. Every request gets logged regardless of whether automation exists yet. Roommates can ask "what's pending?" and the agent can query this table. In V1, the action router starts executing against external systems instead of just logging.
 
-#### 6. Twilio (WhatsApp)
+#### 6. Google Sheets — Subletter/Roommate Tracking
+
+When a message is classified as `potential_subletter`, `potential_roommate`, or `actual_subletter` with confidence > 0.6, the agent:
+
+1. Extracts structured details from the message via OpenAI (name, phone, socials, dates, notes)
+2. Inserts a new row at the top of the "Applicants" sheet (row 2, right after headers)
+
+**Column mapping:**
+
+| Sheet Column | Source |
+|---|---|
+| Person | Extracted name |
+| Contact | Phone + socials (falls back to WhatsApp sender number) |
+| Notes | Date range + any additional notes |
+| Next step | Defaults to "New — needs interview" |
+| Interviewers | Left blank |
+| Interview notes | Left blank |
+
+Uses a Google Cloud service account (`service_account.json`) with the Sheets API. The sheet must be shared with the service account's email as an Editor.
+
+#### 7. Twilio (WhatsApp)
 
 - Twilio Sandbox for development (no Meta approval needed)
 - Each roommate texts the sandbox number
@@ -237,4 +257,6 @@ Typesafe gives fast, structured, confidence-scored decisions that code can branc
 - Twilio webhook URL points to the server
 - SQLite file persisted on a Fly.io volume (`fly volumes create`)
 - OpenClaw runs locally for browser automation (v1)
+- Google Sheets service account key (`service_account.json`) for subletter tracking
 - Environment variables: `TYPESAFE_API_KEY`, `ANTHROPIC_API_KEY`, `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_WHATSAPP_NUMBER`, `PORTAL_URL`, `PORTAL_USER`, `PORTAL_PASS`
+- Optional: `GOOGLE_SERVICE_ACCOUNT_FILE` (defaults to `service_account.json`)

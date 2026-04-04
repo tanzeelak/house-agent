@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from typesafe_client_raw import classify_message
 from db import upsert_roommate, save_message, save_request
 from response_gen import generate_reply, extract_details
+from sheets import append_candidate
 
 load_dotenv()
 
@@ -49,6 +50,11 @@ async def webhook(request: Request):
     if intent in ("potential_subletter", "potential_roommate", "actual_subletter") and confidence > 0.6:
         extracted = extract_details(body)
         print(f"  → extracted: {extracted}")
+        if extracted:
+            try:
+                append_candidate(extracted, intent, sender)
+            except Exception as e:
+                print(f"  → sheets error: {e}")
 
     # Store in SQLite
     upsert_roommate(sender)

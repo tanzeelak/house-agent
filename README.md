@@ -16,6 +16,14 @@ Copy `.env.example` to `.env` and fill in your keys:
 cp .env.example .env
 ```
 
+### Google Sheets (subletter tracking)
+
+The agent automatically adds subletter/roommate candidates to a Google Sheet when they're mentioned in WhatsApp messages.
+
+1. Create a Google Cloud service account with the Sheets API enabled
+2. Download the JSON key and save it as `service_account.json` in the project root
+3. Share the Google Sheet with the service account's `client_email` (Editor access)
+
 ## Running
 
 **Terminal 1** — start the server:
@@ -136,6 +144,6 @@ https://house-agent-morning-water-9712.fly.dev/webhook
 ### V1 — Automation
 - [ ] OpenClaw browser automation for maintenance portal
 - [ ] Confidence-gated safety for real-world actions
-- [ ] Google Sheets integration (subletter tracking)
+- [x] Google Sheets integration (subletter tracking)
 - [ ] LLM fallback for classification when Typesafe is down
 - [ ] Switch response generation to Gemini (free tier)

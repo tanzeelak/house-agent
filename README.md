@@ -121,11 +121,9 @@ https://house-agent-morning-water-9712.fly.dev/webhook
 - [x] Typesafe intent classification (maintenance, roommates, subletters, etc.)
 - [x] Typesafe urgency detection (is_urgent noul)
 - [x] SQLite database (roommates, messages, requests)
-- [ ] LLM fallback for classification when Typesafe is down
 - [x] OpenAI response generation
-- [ ] Switch response generation to Gemini (free tier)
-- [ ] Action router (branch on Typesafe results + confidence)
-- [ ] Test with multiple people messaging the agent
+- [x] Test with multiple people messaging the agent
+- [x] Action router (branch on Typesafe results + confidence)
 
 ### Backlog
 - [x] Deploy to Fly.io with persistent volume for SQLite
@@ -139,3 +137,5 @@ https://house-agent-morning-water-9712.fly.dev/webhook
 - [ ] OpenClaw browser automation for maintenance portal
 - [ ] Confidence-gated safety for real-world actions
 - [ ] Google Sheets integration (subletter tracking)
+- [ ] LLM fallback for classification when Typesafe is down
+- [ ] Switch response generation to Gemini (free tier)

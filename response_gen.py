@@ -25,11 +25,14 @@ def generate_reply(message: str, classification: dict, sender: str) -> str:
     """Generate a short acknowledgment reply."""
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+    maintenance_result = classification.get("maintenance_result")
     context = (
         f"Roommate message: {message}\n\n"
         f"Classification: {classification['intent']} (confidence: {classification['intent_confidence']:.2f})\n"
         f"Sender: {sender}"
     )
+    if maintenance_result:
+        context += f"\n\nMaintenance request was submitted via the portal. Result: {maintenance_result}"
 
     response = client.chat.completions.create(
         model="gpt-4o-mini",

@@ -7,6 +7,7 @@ from typesafe_client_raw import classify_message
 from db import upsert_roommate, save_message, save_request
 from response_gen import generate_reply, extract_details
 from sheets import append_candidate
+from maintenance import submit_maintenance_request
 
 load_dotenv()
 
@@ -56,6 +57,16 @@ async def webhook(request: Request):
             except Exception as e:
                 print(f"  → sheets error: {e}")
 
+    # Submit maintenance request via OpenClaw
+    maintenance_result = None
+    if intent == "maintenance_request" and confidence > 0.6:
+        try:
+            print("  → submitting maintenance request via OpenClaw...")
+            maintenance_result = await submit_maintenance_request(body)
+            print(f"  → maintenance result: {maintenance_result}")
+        except Exception as e:
+            print(f"  → maintenance error: {e}")
+
     # Store in SQLite
     upsert_roommate(sender)
     save_message(sender, body, "inbound")
@@ -63,6 +74,8 @@ async def webhook(request: Request):
         save_request(sender, intent, confidence, is_urgent, body, extracted)
 
     # Response generation
+    if maintenance_result:
+        classification["maintenance_result"] = maintenance_result
     reply_text = generate_reply(body, classification, sender)
     save_message(sender, reply_text, "outbound")
 

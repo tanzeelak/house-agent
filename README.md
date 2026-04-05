@@ -143,6 +143,11 @@ https://house-agent-morning-water-9712.fly.dev/webhook
 
 ### V1 — Automation
 - [ ] OpenClaw browser automation for maintenance portal
+  - [x] `maintenance.py` module + wired into action router
+  - [ ] `nvm use 22 && npm install -g openclaw@latest`
+  - [ ] `openclaw onboard --install-daemon` (use Anthropic API key)
+  - [ ] `openclaw browser` → manually log into AppFolio once
+  - [ ] Test end-to-end: WhatsApp message → maintenance request submitted via portal chatbot
 - [ ] Confidence-gated safety for real-world actions
 - [x] Google Sheets integration (subletter tracking)
 - [ ] LLM fallback for classification when Typesafe is down

@@ -2,6 +2,27 @@
 
 A WhatsApp agent for roommates to manage shared house tasks — maintenance requests, subletter tracking, and more.
 
+![WhatsApp conversation with the house agent](screenshot.png)
+
+## How it works
+
+1. **Roommate sends a WhatsApp message** — "pls fix our fridge shelf", "I'm looking to sublet May–July", etc.
+2. **Typesafe classifies the intent** — maintenance request, potential subletter, roommate inquiry — with confidence scores and urgency detection, in a single API call
+3. **Action router branches on the results** — high confidence triggers auto-actions (log to DB, append to Google Sheet); low confidence asks for clarification
+4. **OpenAI generates a reply** — short, casual WhatsApp-style acknowledgment sent back via Twilio
+
+## Tech stack
+
+| Component | Technology | Role |
+|---|---|---|
+| Messaging | **Twilio** WhatsApp API | Receive and send WhatsApp messages |
+| Classification | **Typesafe** | Intent detection + urgency scoring (structured, confidence-scored) |
+| Response generation | **OpenAI** (GPT-4o-mini) | Compose natural language replies + extract structured details |
+| Subletter tracking | **Google Sheets** API | Auto-append candidates to shared spreadsheet |
+| Server | **FastAPI** + Uvicorn | Webhook endpoint |
+| Database | **SQLite** | Roommates, messages, and request history |
+| Deployment | **Fly.io** | Prod hosting with persistent volumes |
+
 ## Setup
 
 ```bash

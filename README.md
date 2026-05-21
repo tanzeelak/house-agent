@@ -1,6 +1,6 @@
 # house-agent
 
-A WhatsApp agent for roommates to manage shared house tasks — maintenance requests, subletter tracking, and more.
+A WhatsApp agent for roommates to manage shared house tasks: maintenance requests and subletter tracking.
 
 ![WhatsApp conversation with the house agent](screenshot.png)
 

@@ -142,9 +142,9 @@ Once deployed, update the Twilio webhook to:
 https://house-agent-morning-water-9712.fly.dev/webhook
 ```
 
-## What we learned
+## What I learned
 
-This started as a lightweight conversational assistant for managing shared house workflows. The deeper we got, the more it surfaced distributed systems and orchestration problems emerging in a new interface paradigm.
+This started as a lightweight conversational assistant for managing shared house workflows. The deeper I got, the more it became a distributed systems and orchestration problem in a new paradigmn, the agentic ai world.
 
 **AI agents in an AI agent world.** The world is moving towards human → AI → AI → System. Our maintenance request portal now uses a chatbot, so our agent needs to communicate with that AI too. More services means more points of failure — it's like hiring a lawyer who has to negotiate with another lawyer.
 

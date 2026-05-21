@@ -142,6 +142,22 @@ Once deployed, update the Twilio webhook to:
 https://house-agent-morning-water-9712.fly.dev/webhook
 ```
 
+## What we learned
+
+This started as a lightweight conversational assistant for managing shared house workflows. The deeper we got, the more it surfaced distributed systems and orchestration problems emerging in a new interface paradigm.
+
+**AI agents in an AI agent world.** The world is moving towards human → AI → AI → System. Our maintenance request portal now uses a chatbot, so our agent needs to communicate with that AI too. More services means more points of failure — it's like hiring a lawyer who has to negotiate with another lawyer.
+
+**Bounding ambiguity, not hallucinations.** Typesafe's bet is to lean towards a yes/no instead of a hallucination — "traditional AI" confidence thresholds applied to an agentic workflow. When the agent isn't sure if a message is a maintenance request, it should say so, not guess.
+
+**Race conditions in multi-agent systems.** What if two people ask to update the sublet tracker at the same time? How do we not break the Google Sheet? Should we think about atomicity and race conditions differently in an agent world?
+
+**Team representation and shared memory.** What if someone has already asked this question? How do you aggregate data and context for a team using a shared agent?
+
+**Delegation and permissions.** How do you give an agent limited permissions? It can file maintenance requests but shouldn't be able to sign a lease.
+
+**Better UIs for conversational agents.** Twilio is difficult to work with and WhatsApp is limiting. There are likely better interface options for agent-first experiences.
+
 ## Task List
 
 ### V0 — Core Agent
